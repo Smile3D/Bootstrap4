@@ -1,4 +1,4 @@
-var syntax          = 'sass'; // Syntax: sass or scss;
+var syntax          = 'scss'; // Syntax: sass or scss;
 
 var gulp        	= require('gulp'),
     sass        	= require('gulp-sass'),
@@ -41,10 +41,10 @@ gulp.task('browser-sync', function() {
 });
 
 gulp.task('build', ['clean','img', 'styles', 'gcmq'], function() {
-	var buildCSS = gulp.src([
-		'css/main.css'
-	])
-		.pipe(gulp.dest('dist/css'));
+	// var buildCSS = gulp.src([
+	// 	'css/main.css'
+	// ])
+	// 	.pipe(gulp.dest('dist/css'));
 
 	var buildFonts = gulp.src('fonts/**/*')
 		.pipe(gulp.dest('dist/fonts'));
@@ -53,7 +53,10 @@ gulp.task('build', ['clean','img', 'styles', 'gcmq'], function() {
 		.pipe(gulp.dest('dist/js'));
 
 	var buildHTML = gulp.src('*.html')
-		.pipe(gulp.dest('dist'))
+		.pipe(gulp.dest('dist'));
+
+	var buildCSS = gulp.src('css/*.css')
+		.pipe(gulp.dest('dist/css'))
 });
 
 gulp.task('clean', function() {
@@ -65,7 +68,7 @@ gulp.task('clear', function() {
 });
 
 gulp.task('img', function() {
-	return gulp.src('sourceimages/**/*')
+	return gulp.src('images/**/*')
 	.pipe(cache(imagemin({
 		interlaced: true,
 		progressive: true,
