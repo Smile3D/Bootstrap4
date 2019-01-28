@@ -12,6 +12,7 @@ var gulp        	= require('gulp'),
     plumber         = require('gulp-plumber'),
     gutil           = require('gulp-util'),
     sourcemaps      = require('gulp-sourcemaps');
+    cssbeautify     = require('gulp-cssbeautify'),
     concat          = require('gulp-concat'),
     uglify          = require('gulp-uglify'),
     cssnano         = require('gulp-cssnano'),
