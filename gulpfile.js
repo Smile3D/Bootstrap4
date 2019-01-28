@@ -12,6 +12,10 @@ var gulp        	= require('gulp'),
     plumber         = require('gulp-plumber'),
     gutil           = require('gulp-util'),
     sourcemaps      = require('gulp-sourcemaps');
+    concat          = require('gulp-concat'),
+    uglify          = require('gulp-uglify'),
+    cssnano         = require('gulp-cssnano'),
+    rename          = require('gulp-rename'),
 
 gulp.task('styles', function() {
 	return gulp.src(''+syntax+'/**/*.'+syntax+'')
@@ -22,11 +26,34 @@ gulp.task('styles', function() {
 	 }))
 	.pipe(sourcemaps.init())
 	.pipe(sass().on('error', sass.logError))
-	.pipe(autoprefixer(['last 15 version', '>1%', 'ie 8', 'ie 7'], {cascade: true}))
+	.pipe(autoprefixer(['last 2 versions'], {cascade: true}))
 	.pipe(sourcemaps.write('./'))
 	.pipe(plumber.stop())
 	.pipe(gulp.dest('css'))
 	.pipe(browserSync.reload({stream: true}))
+});
+
+gulp.task('scripts', function(){
+	return gulp.src([
+		'node_modules/jquery/dist/jquery.min.js',
+		'js/scripts.js'
+	])
+	.pipe(sourcemaps.init())
+	.pipe(plumber())
+	.pipe(concat('common.js'))
+	.pipe(uglify())
+	.pipe(gulp.dest('js'))
+	.pipe(sourcemaps.write('source-maps'))
+	.pipe(browserSync.reload({stream: true}))
+});
+
+gulp.task('css-libs', function() {
+	return gulp.src([
+		
+	])
+	.pipe(concat('libs.min.css'))
+	.pipe(cssnano())
+	.pipe(gulp.dest('css'));
 });
 
 gulp.task('browser-sync', function() {
@@ -40,23 +67,23 @@ gulp.task('browser-sync', function() {
 	});
 });
 
-gulp.task('build', ['clean','img', 'styles', 'gcmq'], function() {
-	// var buildCSS = gulp.src([
-	// 	'css/main.css'
-	// ])
-	// 	.pipe(gulp.dest('dist/css'));
+gulp.task('build', ['clean','img', 'styles'], function() {
+	var buildCSS = gulp.src([
+		'css/main.css',
+		'css/libs.min.css'
+	])
+		.pipe(cssbeautify())
+ 		.pipe(gcmq())
+		.pipe(gulp.dest('dist/css'));
 
 	var buildFonts = gulp.src('fonts/**/*')
 		.pipe(gulp.dest('dist/fonts'));
 
-	var buildJS = gulp.src('js/**/*')
+	var buildJS = gulp.src('js/common.js')
 		.pipe(gulp.dest('dist/js'));
 
 	var buildHTML = gulp.src('*.html')
-		.pipe(gulp.dest('dist'));
-
-	var buildCSS = gulp.src('css/*.css')
-		.pipe(gulp.dest('dist/css'))
+		.pipe(gulp.dest('dist'))
 });
 
 gulp.task('clean', function() {
@@ -94,5 +121,5 @@ gulp.task('watch', ['browser-sync', 'styles'] , function() {
 	gulp.watch(''+syntax+'/**/*.'+syntax+'', ['styles']);
 	gulp.watch('*.html', browserSync.reload);
 	gulp.watch('**/*.css', browserSync.reload);
-	gulp.watch('js/**/*.js', browserSync.reload);
+	gulp.watch(['js/*.js', '!js/common.js'], ['scripts']);
 });

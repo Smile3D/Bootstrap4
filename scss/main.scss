@@ -19,13 +19,14 @@ $media-expressions: (
 
 // ligatured operators ≥ ≤
 
+@import "custom";
+
+@import "../node_modules/bootstrap/scss/bootstrap.scss";
+
 @import 'vendors/include-media';
 
-@import "vendors/bootstrap/functions";
-@import "vendors/bootstrap/variables";
-@import "vendors/bootstrap/mixins";
-
-@import "bootstrap-custom";
+@import "base/functions";
+@import "base/mixins";
 
 @import 'base/functions';
 @import 'base/mixins';
